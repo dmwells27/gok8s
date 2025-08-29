@@ -36,4 +36,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: core.harbor.domain/library/k8s:latest
+          tags: core.harbor.domain/library/gok8s:latest
