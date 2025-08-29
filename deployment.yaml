@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gok8s
+  labels:
+    app: gok8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gok8s
+  template:
+    metadata:
+      name: gok8s
+      labels:
+        app: gok8s
+    spec:
+      containers:
+        - name: gok8s
+          image: core.harbor.domain/library/gok8s:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: gok8s
+spec:
+  ports:
+    - name: web
+      port: 80
+      targetPort: 80
+  selector:
+    app: gok8s
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: stripprefix
+spec:
+  stripPrefix:
+    prefixes:
+      - /gok8s
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    app.kubernetes.io/name: gok8s-ingress
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    ingress.kubernetes.io/custom-request-headers: l5d-dst-override:gok8s.express.svc.cluster.local:80
+    traefik.ingress.kubernetes.io/rewrite-target: /
+  name: gok8s-ingress
+  namespace: express
+spec:
+  routes:
+    - kind: Rule
+      match: PathPrefix(`/gok8s`)
+      services:
+        - kind: Service
+          name: gok8s
+          namespace: express
+          port: 80
+          nativeLB: true
+      middlewares:
+        - name: stripprefix
