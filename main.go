@@ -24,7 +24,6 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", HomeHandler)
 	r.HandleFunc("/k8s", getKubernetesInfo)
-	r.HandleFunc("/k8s2", getKubernetesInfoInternal)
 	http.Handle("/", r)
 
 	srv := &http.Server{
@@ -69,17 +68,36 @@ func HomeHandler(writer http.ResponseWriter, request *http.Request) {
 
 }
 
-func getKubernetesInfoInternal(writer http.ResponseWriter, request *http.Request) {
-	// creates the in-cluster config
+func getConnection() *kubernetes.Clientset {
 	config, err := rest.InClusterConfig()
 	if err != nil {
-		panic(err.Error())
+		var kubeconfig *string
+		if home := homedir.HomeDir(); home != "" {
+			kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
+		} else {
+			kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
+		}
+		flag.Parse()
+
+		// use the current context in kubeconfig
+		config2, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		config = config2
 	}
 	// creates the clientset
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		panic(err.Error())
 	}
+
+	return clientset
+}
+
+func getKubernetesInfo(writer http.ResponseWriter, request *http.Request) {
+	clientset := getConnection()
 	// get pods in all the namespaces by omitting namespace
 	// Or specify namespace to get pods in particular namespace
 	pods, err := clientset.CoreV1().Pods("").List(context.TODO(), metav1.ListOptions{})
@@ -117,7 +135,7 @@ func getKubernetesInfoInternal(writer http.ResponseWriter, request *http.Request
 
 }
 
-func getKubernetesInfo(writer http.ResponseWriter, request *http.Request) {
+func getKubernetesInfoExt(writer http.ResponseWriter, request *http.Request) {
 	var kubeconfig *string
 	if home := homedir.HomeDir(); home != "" {
 		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
