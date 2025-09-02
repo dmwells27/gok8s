@@ -96,6 +96,10 @@ func getKubernetesInfoInternal(writer http.ResponseWriter, request *http.Request
 	} else {
 		fmt.Printf("Found example-xxxxx pod in default namespace\n")
 	}
+	_, err = writer.Write([]byte("some response"))
+	if err != nil {
+		return
+	}
 
 }
 
