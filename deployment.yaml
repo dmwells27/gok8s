@@ -18,7 +18,7 @@ spec:
       containers:
         - name: gok8s
           image: core.harbor.domain/library/gok8s:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
               protocol: TCP

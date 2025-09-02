@@ -45,6 +45,11 @@ type MyRequest struct {
 	Name string `json:"name"`
 }
 
+type MyResponse struct {
+	Count  int    `json:"count"`
+	Status string `json:"status"`
+}
+
 func HomeHandler(writer http.ResponseWriter, request *http.Request) {
 	log.Println("got request")
 	body, err := io.ReadAll(request.Body)
@@ -83,12 +88,16 @@ func getKubernetesInfoInternal(writer http.ResponseWriter, request *http.Request
 	}
 	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
 
+	var response *MyResponse = &MyResponse{}
+	response.Count = len(pods.Items)
+
 	// Examples for error handling:
 	// - Use helper functions e.g. errors.IsNotFound()
 	// - And/or cast to StatusError and use its properties like e.g. ErrStatus.Message
 	_, err = clientset.CoreV1().Pods("default").Get(context.TODO(), "example-xxxxx", metav1.GetOptions{})
 	if errors.IsNotFound(err) {
 		fmt.Printf("Pod example-xxxxx not found in default namespace\n")
+		response.Status = "Pod example-xxxxx not found in default namespace"
 	} else if statusError, isStatus := err.(*errors.StatusError); isStatus {
 		fmt.Printf("Error getting pod %v\n", statusError.ErrStatus.Message)
 	} else if err != nil {
@@ -96,7 +105,12 @@ func getKubernetesInfoInternal(writer http.ResponseWriter, request *http.Request
 	} else {
 		fmt.Printf("Found example-xxxxx pod in default namespace\n")
 	}
-	_, err = writer.Write([]byte("some response"))
+
+	marshal, err := json.Marshal(response)
+	if err != nil {
+		return
+	}
+	_, err = writer.Write(marshal)
 	if err != nil {
 		return
 	}
