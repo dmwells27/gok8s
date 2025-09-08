@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/IBM/sarama"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -38,6 +39,20 @@ func (cm ExternalConnectionConfigManager) GetConnectionConfig() (*rest.Config, e
 
 	kubeconfig := filepath.Join(homedir.HomeDir(), ".kube", "config")
 	return clientcmd.BuildConfigFromFlags("", kubeconfig)
+}
+
+func sendMessage() {
+	config := sarama.NewConfig()
+	producer, err := sarama.NewAsyncProducer([]string{"my-cluster-kafka-brokers.kafka.svc.cluster.local:9092"}, config)
+	if err != nil {
+		log.Fatalln("Failed to start Sarama producer:", err)
+	}
+	defer producer.AsyncClose()
+	producer.Input() <- &sarama.ProducerMessage{
+		Topic: "access_log",
+		Key:   sarama.StringEncoder("1"),
+		Value: sarama.StringEncoder("some value"),
+	}
 }
 
 func main() {
@@ -71,6 +86,7 @@ type MyResponse struct {
 
 func HomeHandler(writer http.ResponseWriter, request *http.Request) {
 	log.Println("got request")
+	sendMessage()
 	//body, err := io.ReadAll(request.Body)
 	//if err != nil {
 	//	return
