@@ -53,12 +53,14 @@ func sendMessage() {
 		Key:   sarama.StringEncoder("1"),
 		Value: sarama.StringEncoder("some value"),
 	}
+
 }
 
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", HomeHandler)
 	r.HandleFunc("/k8s", getKubernetesInfo)
+	r.HandleFunc("/consume", Consume)
 	http.Handle("/", r)
 
 	srv := &http.Server{
