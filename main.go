@@ -1,6 +1,7 @@
 package main
 
 import (
+	"awesomeProject/internal"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -60,7 +61,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", HomeHandler)
 	r.HandleFunc("/k8s", getKubernetesInfo)
-	r.HandleFunc("/consume", Consume)
+	r.HandleFunc("/consume", internal.Consume)
 	http.Handle("/", r)
 
 	srv := &http.Server{
