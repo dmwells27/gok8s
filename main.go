@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -156,7 +157,12 @@ func getConnection() *kubernetes.Clientset {
 }
 
 func getKubernetesInfo(writer http.ResponseWriter, request *http.Request) {
-	var im ConnectionConfigManager = ExternalConnectionConfigManager{}
+	var im ConnectionConfigManager
+	if runningInKubernetes() {
+		im = InternalConnectionConfigManager{}
+	} else {
+		im = ExternalConnectionConfigManager{}
+	}
 	config, err := im.GetConnectionConfig()
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
@@ -197,4 +203,16 @@ func getKubernetesInfo(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+}
+
+func runningInKubernetes() bool {
+	if _, ok := os.LookupEnv("KUBERNETES_SERVICE_HOST"); ok {
+		return true
+	}
+
+	if _, err := os.Stat("/var/run/secrets/kubernetes.io/serviceaccount/token"); err == nil {
+		return true
+	}
+
+	return false
 }
