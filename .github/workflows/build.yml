@@ -40,13 +40,13 @@ jobs:
           tags: core.harbor.domain/library/gok8s:latest
 
       - name: Display SHA
-        run: echo {{ steps.docker-build.outputs.digest }}
+        run: echo ${{ steps.docker-build.outputs.digest }}
 
       - name: Display Metadata
-        run: echo {{ steps.docker-build.outputs.metadata }}
+        run: echo ${{ steps.docker-build.outputs.metadata }}
 
       - name: Display Image
-        run: echo {{ steps.docker-build.outputs.imageid }}
+        run: echo ${{ steps.docker-build.outputs.imageid }}
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3.10.0
