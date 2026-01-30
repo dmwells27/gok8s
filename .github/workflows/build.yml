@@ -58,3 +58,5 @@ jobs:
         env:
           # Set the password from a secret (leave blank if no password was set)
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          COSIGN_REGISTRY_USERNAME: ${{ secrets.HARBOR_USER }}
+          COSIGN_REGISTRY_PASSWORD: ${{ secrets.HARBOR_TOKEN }}
