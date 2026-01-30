@@ -54,7 +54,7 @@ jobs:
       - name: Sign image with Cosign
         run: |
           echo "${{ secrets.COSIGN_PRIVATE_KEY }}" > cosign.key
-          cosign sign k8s://secured/cosign-key core.harbor.domain/library/gok8s@${{ steps.docker-build.outputs.digest }} --key cosign.key
+          cosign sign core.harbor.domain/library/gok8s@${{ steps.docker-build.outputs.digest }} --key cosign.key
         env:
           # Set the password from a secret (leave blank if no password was set)
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
