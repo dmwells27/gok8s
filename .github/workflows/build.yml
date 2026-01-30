@@ -42,9 +42,6 @@ jobs:
       - name: Display SHA
         run: echo ${{ steps.docker-build.outputs.digest }}
 
-      - name: Display Metadata
-        run: echo ${{ steps.docker-build.outputs.metadata }}
-
       - name: Display Image
         run: echo ${{ steps.docker-build.outputs.imageid }}
 
@@ -53,4 +50,4 @@ jobs:
 
       - name: Sign image with Cosign
         run: |
-          cosign sign --key k8s://secured/cosign-key core.harbor.domain/library/gok8s:${{ steps.version.outputs.version }}
+          cosign sign --key k8s://secured/cosign-key core.harbor.domain/library/gok8s@${{ steps.docker-build.outputs.digest }}
