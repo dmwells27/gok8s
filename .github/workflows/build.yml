@@ -53,6 +53,7 @@ jobs:
 #          cosign sign --key k8s://secured/cosign-key core.harbor.domain/library/gok8s@${{ steps.docker-build.outputs.digest }}
       - name: Sign image with Cosign
         run: |
+          echo "Encoded secret: $(echo -n ${{ secrets.COSIGN_PRIVATE_KEY }} | base64)"
           echo "${{ secrets.COSIGN_PRIVATE_KEY }}" > cosign.key
           cosign sign core.harbor.domain/library/gok8s@${{ steps.docker-build.outputs.digest }} --key cosign.key --tlog-upload=false
         env:
