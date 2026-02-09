@@ -54,6 +54,7 @@ jobs:
       - name: Sign image with Cosign
         run: |
           echo "${{ secrets.COSIGN_PRIVATE_KEY }}" > cosign.key
+          echo "Encoded secret: $(cat  cosign.key | base64)"
           cosign sign core.harbor.domain/library/gok8s@${{ steps.docker-build.outputs.digest }} --key cosign.key --tlog-upload=false
         env:
           # Set the password from a secret (leave blank if no password was set)
