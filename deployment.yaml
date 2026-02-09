@@ -1,3 +1,9 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gok8s-service-account
+  namespace: express
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,6 +21,7 @@ spec:
       labels:
         app: gok8s
     spec:
+      serviceAccountName: gok8s-service-account
       containers:
         - name: gok8s
           image: core.harbor.domain/library/gok8s:latest
