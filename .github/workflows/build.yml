@@ -15,13 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - env:
-          MY_USER: ${{ secrets.HARBOR_USER }}
-          MY_SEC: ${{ secrets.HARBOR_TOKEN }}
+          MY_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          MY_PASS: ${{ secrets.COSIGN_PASSWORD }}
         run: |
-          echo "HARBOR_USER (***)    = ${MY_CLIENT_ID}"
-          echo "HARBOR_USER (base64) = $(echo ${MY_USER} | base64)"
-          echo "HARBOR_TOKEN (***)    = ${MY_SEC}"
-          echo "HARBOR_TOKEN (base64) = $(echo ${MY_SEC} | base64)"   
+          echo "COSIGN_PRIVATE_KEY (***)    = ${MY_KEY}"
+          echo "COSIGN_PRIVATE_KEY (base64) = $(echo ${MY_KEY} | base64)"
+          echo "COSIGN_PASSWORD (***)    = ${MY_PASS}"
+          echo "COSIGN_PASSWORD (base64) = $(echo ${MY_PASS} | base64)"   
           
   build:
 
