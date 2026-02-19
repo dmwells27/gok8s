@@ -16,12 +16,12 @@ jobs:
       - uses: actions/checkout@v3
       - env:
           MY_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          MY_PASS: ${{ secrets.COSIGN_PASSWORD }}
+          MY_DMW: ${{ secrets.COSIGN_PASSWORD }}
         run: |
           echo "COSIGN_PRIVATE_KEY (***)    = ${MY_KEY}"
           echo "COSIGN_PRIVATE_KEY (base64) = $(echo ${MY_KEY} | base64)"
-          echo "COSIGN_PASSWORD (***)    = ${MY_PASS}"
-          echo "COSIGN_PASSWORD (base64) = $(echo ${MY_PASS} | base64)"   
+          echo "COSIGN_DMW (***)    = ${MY_DMW}"
+          echo "COSIGN_DMW (base64) = $(echo ${MY_DMW} | base64)"   
           
   build:
 
