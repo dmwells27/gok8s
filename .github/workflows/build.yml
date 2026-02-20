@@ -19,11 +19,11 @@ jobs:
           MY_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           MY_DMW: ${{ secrets.COSIGN_PASSWORD }}
         run: |
-          echo "HARBOR_USER (***)    = ${MY_CLIENT_ID}"
-          echo "HARBOR_USER (base64) = $(echo ${MY_USER} | base64)"
+          echo "HARBOR_USER (***)    = ${MY_KEY}"
+          echo "HARBOR_USER (base64) = $(echo ${MY_KEY} | base64)"
           echo -n "${{ secrets.COSIGN_PRIVATE_KEY }}" | xxd -ps
-          echo "HARBOR_TOKEN (***)    = ${MY_SEC}"
-          echo "HARBOR_TOKEN (base64) = $(echo ${MY_SEC} | base64)"   
+          echo "HARBOR_TOKEN (***)    = ${MY_DMW}"
+          echo "HARBOR_TOKEN (base64) = $(echo ${MY_DMW} | base64)"   
 
 
   build:
