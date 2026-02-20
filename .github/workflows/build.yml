@@ -1,10 +1,11 @@
 name: Build App
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  on: workflow_dispatch
+#  push:
+#    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
 
 
 jobs:
@@ -22,7 +23,7 @@ jobs:
           echo "HARBOR_USER (base64) = $(echo ${MY_USER} | base64)"
           echo "HARBOR_TOKEN (***)    = ${MY_SEC}"
           echo "HARBOR_TOKEN (base64) = $(echo ${MY_SEC} | base64)"   
-          
+
   build:
 
     runs-on: self-hosted
